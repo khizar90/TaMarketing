@@ -62,7 +62,7 @@ class OrderController extends Controller
 
                 $create->answer = implode(',', $mediaPaths);
             } else {
-                $create->answer = $item['answer'];
+                $create->answer = implode(',', $item['answer']);
             }
             $create->save();
         }
