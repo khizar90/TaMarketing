@@ -14,8 +14,13 @@ class AdminOrderController extends Controller
 {
     public function list($status)
     {
+        $pending = Order::where('status', 0)->count();
+        $accept = Order::where('status', 1)->count();
+        $start = Order::where('status', 2)->count();
+        $delivered = Order::where('status', 3)->count();
+
         $orders = Order::with(['user:uuid,name,image,email,verify'])->where('status', $status)->get();
-        return view('order.index', compact('orders'));
+        return view('order.index', compact('orders','pending','accept','start','delivered'));
     }
     public function changeStatus(Request $request, $order_id, $status)
     {
@@ -47,6 +52,11 @@ class AdminOrderController extends Controller
     }
     public function detail($status, $order_id)
     {
+        $pending = Order::where('status', 0)->count();
+        $accept = Order::where('status', 1)->count();
+        $start = Order::where('status', 2)->count();
+        $delivered = Order::where('status', 3)->count();
+
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
         $order_count = Order::where('user_id', $order->user->uuid)->count();
         $order->user->order_count = $order_count;
@@ -58,7 +68,7 @@ class AdminOrderController extends Controller
         }
         $order->answers = $answers;
 
-        return view('order.detail', compact('order'));
+        return view('order.detail', compact('order','pending','accept','start','delivered'));
     }
 
 

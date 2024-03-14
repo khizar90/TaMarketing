@@ -51,7 +51,9 @@
             <a href="{{ route('dashboard-verify-users') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="User">Verifications Requests</div>
-
+                @if($pending != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$pending}}</div>
+                @endif
             </a>
         </li>
         <li class="menu-header small text-uppercase">
@@ -62,28 +64,36 @@
             <a href="{{ route('dashboard-order-', 0) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="Pending">Pending</div>
-
+                @if($pending != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$pending}}</div>
+                @endif
             </a>
         </li>
         <li class="menu-item {{ Request::url() == route('dashboard-order-' , 1) ? 'active' : '' }} ">
             <a href="{{ route('dashboard-order-', 1) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="Pending">Accepted</div>
-
+                @if($accept != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$accept}}</div>
+                @endif
             </a>
         </li>
         <li class="menu-item {{ Request::url() == route('dashboard-order-' , 2) ? 'active' : '' }} ">
             <a href="{{ route('dashboard-order-', 2) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="Pending">Started</div>
-
+                @if($start != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$start}}</div>
+                @endif
             </a>
         </li>
         <li class="menu-item {{ Request::url() == route('dashboard-order-' , 3) ? 'active' : '' }} ">
             <a href="{{ route('dashboard-order-', 3) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="Pending">Delivered</div>
-
+                @if($delivered != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$delivered}}</div>
+                @endif
             </a>
         </li>
 
