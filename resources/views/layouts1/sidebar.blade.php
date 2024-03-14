@@ -51,8 +51,8 @@
             <a href="{{ route('dashboard-verify-users') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-circle"></i>
                 <div data-i18n="User">Verifications Requests</div>
-                @if($pending != 0)
-                <div class="badge bg-danger rounded-pill ms-auto">{{$pending}}</div>
+                @if($verify != 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{$verify}}</div>
                 @endif
             </a>
         </li>

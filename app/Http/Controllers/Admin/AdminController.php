@@ -17,7 +17,7 @@ class AdminController extends Controller
     public function index()
     {
 
-        // $verify = User::where('verify', 1)->count();
+        $verify = User::where('verify', 0)->count();
 
         $pending = Order::where('status', 0)->count();
         $accept = Order::where('status', 1)->count();
@@ -36,7 +36,7 @@ class AdminController extends Controller
         $iosTraffic = UserDevice::whereIn('user_id', $mainUsers)->where('device_name', 'ios')->count();
         $androidTraffic = UserDevice::whereIn('user_id', $mainUsers)->where('device_name', 'android')->count();
 
-        return view('index', compact('todayActive', 'total', 'todayNew', 'mainUsers', 'loggedIn', 'iosTraffic', 'androidTraffic','pending','accept','start','delivered','complete','canceled',));
+        return view('index', compact('todayActive', 'total', 'todayNew', 'mainUsers', 'loggedIn', 'iosTraffic', 'androidTraffic','pending','accept','start','delivered','complete','canceled','verify'));
     }
 
     public function users(Request $request)
@@ -62,10 +62,10 @@ class AdminController extends Controller
             }
             $users = $users->where('verify', 1)->latest()->Paginate(20);
 
-            return view('user.user-ajax', compact('users','pending','accept','start','delivered'));
+            return view('user.user-ajax', compact('users','pending','accept','start','delivered','verify'));
         }
 
-        return view('user.index', compact('users','pending','accept','start','delivered'));
+        return view('user.index', compact('users','pending','accept','start','delivered','verify'));
     }
 
 
@@ -108,10 +108,10 @@ class AdminController extends Controller
             }
             $users = $users->where('verify', 0)->latest()->Paginate(20);
 
-            return view('user.verify_ajax', compact('users','pending','accept','start','delivered'));
+            return view('user.verify_ajax', compact('users','pending','accept','start','delivered','verify'));
         }
 
-        return view('user.verify_request', compact('users','pending','accept','start','delivered'));
+        return view('user.verify_request', compact('users','pending','accept','start','delivered','verify'));
     }
 
 
@@ -153,7 +153,7 @@ class AdminController extends Controller
         $delivered = Order::where('status', 3)->count();
         $faqs = Faq::all();
 
-        return view('faq', compact('faqs','pending','accept','start','delivered'));
+        return view('faq', compact('faqs','pending','accept','start','delivered','verify'));
     }
 
     public function deleteFaq($id)
