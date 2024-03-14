@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->references('uuid')->on('users')->onDelete('cascade');
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->string('question');
-            $table->string('answer');
+            $table->longText('answer');
             $table->string('type');
             $table->boolean('status')->default(0);
             $table->timestamps();
