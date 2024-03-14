@@ -17,7 +17,7 @@ class AdminController extends Controller
     public function index()
     {
 
-        // $verify = User::where('verify', 1)->count();
+        $verify = User::where('verify', 0)->count();
 
         $pending = Order::where('status', 0)->count();
         $accept = Order::where('status', 1)->count();
