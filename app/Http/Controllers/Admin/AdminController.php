@@ -41,6 +41,7 @@ class AdminController extends Controller
 
     public function users(Request $request)
     {
+        $verify = User::where('verify', 0)->count();
         $pending = Order::where('status', 0)->count();
         $accept = Order::where('status', 1)->count();
         $start = Order::where('status', 2)->count();
@@ -92,6 +93,7 @@ class AdminController extends Controller
 
     public function verifyUsers(Request $request)
     {
+        $verify = User::where('verify', 0)->count();
         $pending = Order::where('status', 0)->count();
         $accept = Order::where('status', 1)->count();
         $start = Order::where('status', 2)->count();
@@ -147,6 +149,7 @@ class AdminController extends Controller
 
     public function faqs()
     {
+        $verify = User::where('verify', 0)->count();
         $pending = Order::where('status', 0)->count();
         $accept = Order::where('status', 1)->count();
         $start = Order::where('status', 2)->count();
