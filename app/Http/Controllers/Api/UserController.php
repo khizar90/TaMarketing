@@ -8,6 +8,7 @@ use App\Http\Requests\Api\SendMessageRequest;
 use App\Models\CancelOrder;
 use App\Models\Message;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
 
@@ -37,4 +38,26 @@ class UserController extends Controller
         ]);
     }
    
+    public function counter($uuid)
+    {
+
+        $counter = User::where('uuid',$uuid)->first();
+
+        if($counter){
+            $message = Message::where('user_id', $counter->uuid)->where('is_read',0)->count();
+            return response()->json([
+                'status' => true,
+                'action' => "Counter",
+                'data' => array(
+                    'message' => $message
+                )
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'action' => "User not found",
+        ]);
+    }
+
 }

@@ -47,6 +47,7 @@ Route::get('order/list/messages/{order_id}', [OrderController::class, 'conversat
 Route::post('order/send/message', [OrderController::class, 'sendMessage']);
 
 Route::get('home/{user_id}', [UserController::class, 'home']);
+Route::get('counter/{user_id}', [UserController::class, 'counter']);
 
 
 
