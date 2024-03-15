@@ -170,7 +170,7 @@ class OrderController extends Controller
         $message->order_id = $request->order_id;
         $message->type = $request->type;
         $message->message = $request->message ?: '';
-        $message->send_by = 'admin';
+        $message->send_by = 'user';
         $message->time = strtotime(date('Y-m-d H:i:s'));
 
         if ($request->hasFile('attachment')) {
