@@ -27,12 +27,12 @@
             </div>
         </td>
 
-        <td>{{ $pending }}</td>
-        <td>{{ $accepted }}</td>
-        <td>{{ $started }}</td>
-        <td>{{ $delivered }}</td>
-        <td>{{ $completed }}</td>
-        <td>{{ $cancelled }}</td>
+        <td>{{ $user->userpending }}</td>
+        <td>{{ $user->useraccepted }}</td>
+        <td>{{ $user->userstarted }}</td>
+        <td>{{ $user->userdelivered }}</td>
+        <td>{{ $user->usercompleted }}</td>
+        <td>{{ $user->usercancelled }}</td>
 
         <td class="account-status text-start">
             @if ($user->verify == 1)
