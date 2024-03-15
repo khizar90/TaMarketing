@@ -76,11 +76,17 @@ class AdminOrderController extends Controller
 
     public function conversation($order_id)
     {
+        $verify = User::where('verify', 0)->count();
+        $pending = Order::where('status', 0)->count();
+        $accept = Order::where('status', 1)->count();
+        $start = Order::where('status', 2)->count();
+        $delivered = Order::where('status', 3)->count();
+
         $conversation = Message::where('order_id', $order_id)->orderBy('created_at', 'asc')
             ->get();
         $order = Order::find($order_id);
         $findUser = User::find($order->user_id)->first();
-        return  view('order.chat', compact('conversation', 'findUser', 'order'));
+        return  view('order.chat', compact('conversation', 'findUser', 'order','pending','accept','start','delivered','verify'));
     }
 
     public function sendMessage(Request $request)
