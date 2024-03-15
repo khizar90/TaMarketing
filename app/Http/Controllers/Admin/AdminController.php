@@ -50,12 +50,19 @@ class AdminController extends Controller
         $users = User::where('verify', 1)->latest()->paginate(20);
 
         foreach ($users as $user) {
+                
             $userpending = Order::where('user_id', $user->uuid)->where('status', 0)->count();
+            $users->userpending=$userpending;
             $useraccepted = Order::where('user_id', $user->uuid)->where('status', 1)->count();
+            $users->useraccepted=$useraccepted;
             $userstarted = Order::where('user_id', $user->uuid)->where('status', 2)->count();
+            $users->userstarted=$userstarted;
             $userdelivered = Order::where('user_id', $user->uuid)->where('status', 3)->count();
+            $users->userdelivered=$userdelivered;
             $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
+            $users->usercompleted=$usercompleted;
             $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
+            $users->userrcancelled=$userrcancelled;
         }
 
 
