@@ -62,7 +62,7 @@ class AdminController extends Controller
             $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
             $users->usercompleted=$usercompleted;
             $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
-            $users->userrcancelled=$userrcancelled;
+            $user->userrcancelled=$userrcancelled;
         }
 
 
