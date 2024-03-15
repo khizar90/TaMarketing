@@ -63,10 +63,10 @@ class AdminController extends Controller
             }
             $users = $users->where('verify', 1)->latest()->Paginate(20);
 
-            return view('user.user-ajax', compact('users','pending','accept','start','delivered','verify'));
+            return view('user.user-ajax', compact('users','accepted','pending','accept','start','delivered','verify'));
         }
 
-        return view('user.index', compact('users','pending','accept','start','delivered','verify'));
+        return view('user.index', compact('users','pending','accepted','accept','start','delivered','verify'));
     }
 
 
