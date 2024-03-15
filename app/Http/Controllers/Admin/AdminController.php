@@ -61,8 +61,8 @@ class AdminController extends Controller
             $user->userdelivered=$userdelivered;
             $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
             $user->usercompleted=$usercompleted;
-            $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
-            $user->userrcancelled=$userrcancelled;
+            $usercancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
+            $user->usercancelled=$usercancelled;
         }
 
 
@@ -88,8 +88,8 @@ class AdminController extends Controller
                 $user->userdelivered=$userdelivered;
                 $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
                 $user->usercompleted=$usercompleted;
-                $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
-                $user->userrcancelled=$userrcancelled;
+                $usercancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
+                $user->usercancelled=$usercancelled;
             }
             return view('user.user-ajax', compact('users', 'pending', 'accept', 'start', 'delivered', 'verify'));
         }
