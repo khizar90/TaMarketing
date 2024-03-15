@@ -52,15 +52,15 @@ class AdminController extends Controller
         foreach ($users as $user) {
                 
             $userpending = Order::where('user_id', $user->uuid)->where('status', 0)->count();
-            $users->userpending=$userpending;
+            $user->userpending=$userpending;
             $useraccepted = Order::where('user_id', $user->uuid)->where('status', 1)->count();
-            $users->useraccepted=$useraccepted;
+            $user->useraccepted=$useraccepted;
             $userstarted = Order::where('user_id', $user->uuid)->where('status', 2)->count();
-            $users->userstarted=$userstarted;
+            $user->userstarted=$userstarted;
             $userdelivered = Order::where('user_id', $user->uuid)->where('status', 3)->count();
-            $users->userdelivered=$userdelivered;
+            $user->userdelivered=$userdelivered;
             $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
-            $users->usercompleted=$usercompleted;
+            $user->usercompleted=$usercompleted;
             $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
             $user->userrcancelled=$userrcancelled;
         }
@@ -79,17 +79,17 @@ class AdminController extends Controller
             foreach ($users as $user) {
                 
                 $userpending = Order::where('user_id', $user->uuid)->where('status', 0)->count();
-                $users->userpending=$userpending;
+                $user->userpending=$userpending;
                 $useraccepted = Order::where('user_id', $user->uuid)->where('status', 1)->count();
-                $users->useraccepted=$useraccepted;
+                $user->useraccepted=$useraccepted;
                 $userstarted = Order::where('user_id', $user->uuid)->where('status', 2)->count();
-                $users->userstarted=$userstarted;
+                $user->userstarted=$userstarted;
                 $userdelivered = Order::where('user_id', $user->uuid)->where('status', 3)->count();
-                $users->userdelivered=$userdelivered;
+                $user->userdelivered=$userdelivered;
                 $usercompleted = Order::where('user_id', $user->uuid)->where('status', 4)->count();
-                $users->usercompleted=$usercompleted;
+                $user->usercompleted=$usercompleted;
                 $userrcancelled = Order::where('user_id', $user->uuid)->where('status', 5)->count();
-                $users->userrcancelled=$userrcancelled;
+                $user->userrcancelled=$userrcancelled;
             }
             return view('user.user-ajax', compact('users', 'pending', 'accept', 'start', 'delivered', 'verify'));
         }
