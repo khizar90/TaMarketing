@@ -59,13 +59,12 @@ class OrderController extends Controller
                         $mediaPaths[] =  $path;
                     }
                 }
-                
+
                 $create->answer = implode(',', $mediaPaths);
             } else {
                 $create->answer = implode(',', $item['answer']);
             }
 
-            return 'save';
             $create->save();
         }
         return response()->json([
