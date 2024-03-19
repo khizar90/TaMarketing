@@ -65,7 +65,6 @@ class OrderController extends Controller
                 $create->answer = implode(',', $item['answer']);
             }
 
-            return 'save';
             $create->save();
         }
         return response()->json([
