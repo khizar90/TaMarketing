@@ -77,11 +77,15 @@ class OrderController extends Controller
     public function list($status, $user_id)
     {
         $list = Order::where('user_id', $user_id)->where('status', $status)->get();
-        return response()->json([
-            'status' => true,
-            'action' => "Orders",
-            'data' => $list
-        ]);
+        foreach ($list as $item) {
+            $item->is_payment = false;
+        }
+            return response()->json([
+                'status' => true,
+                'action' => "Orders",
+                'data' => $item
+            ]);
+        
     }
     public function cancel(CancelOrderRequest $request)
     {
@@ -108,6 +112,7 @@ class OrderController extends Controller
         foreach ($answers as $item) {
             $item->answer = explode(',', $item->answer);
         }
+        $order->is_payment = false;
         $order->answers = $answers;
         return response()->json([
             'status' => true,
@@ -146,6 +151,7 @@ class OrderController extends Controller
             $order = Order::find($item);
             $count = Message::where('order_id', $order->id)->where('is_read', 0)->count();
             $order->un_read  = $count;
+            $order->is_payment  = false;
             $orders[] = $order;
         }
 

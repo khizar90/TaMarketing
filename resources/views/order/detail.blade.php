@@ -174,10 +174,10 @@
                             <p class="text-body">{{ $order->created_at }}</p>
                         </div>
                         <div class="d-flex align-content-center flex-wrap gap-2">
-                            @if ($order->status != 5)
-                                <a href="{{ route('dashboard-order-conversation', $order->id) }}"
-                                    class="btn btn-primary ">Chat</a>
-                            @endif
+                            @if ($order->status == 0 || $order->status == 1 || $order->status == 2 || $order->status == 3)
+                            <a href="{{ route('dashboard-order-conversation', $order->id) }}" class="btn btn-primary">Chat</a>
+                        @endif
+                        
 
                             @if ($order->status == 0 || $order->status == 1)
                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancel">Cancel

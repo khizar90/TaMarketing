@@ -89,8 +89,8 @@
                                                 @if ($item->user->image)
                                                     <div class="avatar-wrapper">
                                                         <div class="avatar avatar-sm me-3"><img
-                                                                src="{{ asset($item->user->image) }}"
-                                                                alt="Avatar" class="rounded-circle">
+                                                                src="{{ asset($item->user->image) }}" alt="Avatar"
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                 @else
@@ -343,15 +343,16 @@
 
                                         <td class="detailbtn">
                                             <a href="javascript:;" class="text-body dropdown-toggle hide-arrow"
-                                                data-bs-toggle="dropdown"><i
-                                                    class="ti ti-dots-vertical ti-sm mx-1"></i></a>
+                                                data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-sm mx-1"></i></a>
                                             <div class="dropdown-menu dropdown-menu-end m-0">
                                                 <a href="{{ url('/dashboard/order/detail/' . $item->status . '/' . $item->id) }}"
                                                     class="dropdown-item">Detail
                                                 </a>
-                                                <a href="{{ route('dashboard-order-conversation', $item->id) }}" class="dropdown-item">Chat
-                                                </a>
-
+                                                @if ($item->status == 1 || $item->status == 2 || $item->status == 3 || $item->status == 0)
+                                                    <a href="{{ route('dashboard-order-conversation', $item->id) }}"
+                                                        class="dropdown-item">Chat
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
 

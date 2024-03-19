@@ -49,7 +49,8 @@ class UserController extends Controller
                 'status' => true,
                 'action' => "Counter",
                 'data' => array(
-                    'message' => $message
+                    'message_unread_counter' => $message,
+                    'notification_unread_counter' => 0,
                 )
             ]);
         }
