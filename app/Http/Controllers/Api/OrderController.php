@@ -106,8 +106,7 @@ class OrderController extends Controller
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
         $answers = UserAnswer::where('order_id', $order_id)->get();
         foreach ($answers as $item) {
-            $image = explode(',', $item->asnwer);
-            $item->answer  = $image;
+            $item->answer = explode(',', $item->answer);
         }
         $order->answers = $answers;
         return response()->json([
