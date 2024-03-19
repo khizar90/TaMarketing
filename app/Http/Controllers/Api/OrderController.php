@@ -46,7 +46,7 @@ class OrderController extends Controller
             $create->question = $item['question'];
             $create->type = $item['type'];
             $create->order_id = $order->id;
-            if ($item['type'] == 'multi_images' || $item['type'] == 'single_image'  || $item['type'] == 'documnet_type'  || $item['type'] == 'single_video') {
+            if ($item['type'] == 'multiple_images' || $item['type'] == 'single_image'  || $item['type'] == 'document_type'  || $item['type'] == 'single_video') {
                 $mediaPaths = [];
                 foreach ($item['answer'] as $base64Image) {
                     $decodedImage = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
@@ -59,11 +59,13 @@ class OrderController extends Controller
                         $mediaPaths[] =  $path;
                     }
                 }
-
+                
                 $create->answer = implode(',', $mediaPaths);
             } else {
                 $create->answer = implode(',', $item['answer']);
             }
+
+            return 'save';
             $create->save();
         }
         return response()->json([
@@ -104,6 +106,10 @@ class OrderController extends Controller
     {
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
         $answers = UserAnswer::where('order_id', $order_id)->get();
+        foreach ($answers as $item) {
+            $image = explode(',', $item->asnwer);
+            $item->answer  = $image;
+        }
         $order->answers = $answers;
         return response()->json([
             'status' => true,
