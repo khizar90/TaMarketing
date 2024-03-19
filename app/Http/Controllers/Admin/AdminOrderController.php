@@ -20,7 +20,7 @@ class AdminOrderController extends Controller
         $start = Order::where('status', 2)->count();
         $delivered = Order::where('status', 3)->count();
 
-        $orders = Order::with(['user:uuid,name,image,email,verify'])->where('status', $status)->get();
+        $orders = Order::with(['user:uuid,name,image,email,verify'])->where('status', $status)->latest()->get();
         return view('order.index', compact('orders','pending','accept','start','delivered','verify'));
     }
     public function changeStatus(Request $request, $order_id, $status)
