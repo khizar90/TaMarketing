@@ -46,7 +46,7 @@ class OrderController extends Controller
             $create->question = $item['question'];
             $create->type = $item['type'];
             $create->order_id = $order->id;
-            if ($item['type'] == 'multiple_images' || $item['type'] == 'single_image'  || $item['type'] == 'document_type'  || $item['type'] == 'single_video') {
+            if ($item['type'] == 'multiple_images' || $item['type'] == 'single_image') {
                 $mediaPaths = [];
                 foreach ($item['answer'] as $base64Image) {
                     $decodedImage = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
@@ -60,6 +60,28 @@ class OrderController extends Controller
                     }
                 }
 
+                $create->answer = implode(',', $mediaPaths);
+            } elseif ($item['type'] == 'single_video') {
+                $mediaPaths = [];
+                foreach ($item['answer'] as $base64Video) {
+                    $decodedVideo = base64_decode(preg_replace('#^data:video/\w+;base64,#i', '', $base64Video));
+                    $videoFilename = uniqid() . '.mp4'; // You may adjust the extension based on the actual video type
+                    $videoPath = '/uploads/order/media/' . $videoFilename;
+                    if (file_put_contents(public_path($videoPath), $decodedVideo)) {
+                        $mediaPaths[] = $videoPath;
+                    }
+                }
+                $create->answer = implode(',', $mediaPaths);
+            } elseif ($item['type'] == 'document_type') {
+                $mediaPaths = [];
+                foreach ($item['answer'] as $base64Pdf) {
+                    $decodedDocument = base64_decode(preg_replace('#^data:application/\w+;base64,#i', '', $base64Pdf));
+                    $documentFilename = uniqid() . '.pdf'; // You may adjust the extension based on the actual document type
+                    $documentPath = '/uploads/order/media/' . $documentFilename;
+                    if (file_put_contents(public_path($documentPath), $decodedDocument)) {
+                        $mediaPaths[] = $documentPath;
+                    }
+                }
                 $create->answer = implode(',', $mediaPaths);
             } else {
                 $create->answer = implode(',', $item['answer']);
@@ -80,12 +102,11 @@ class OrderController extends Controller
         foreach ($list as $item) {
             $item->is_payment = false;
         }
-            return response()->json([
-                'status' => true,
-                'action' => "Orders",
-                'data' => $list
-            ]);
-        
+        return response()->json([
+            'status' => true,
+            'action' => "Orders",
+            'data' => $list
+        ]);
     }
     public function cancel(CancelOrderRequest $request)
     {
@@ -107,20 +128,27 @@ class OrderController extends Controller
 
     public function detail($order_id)
     {
-        
+
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
-        $answers = UserAnswer::where('order_id', $order_id)->get();
-        foreach ($answers as $item) {
-            $item->answer = explode(',', $item->answer);
+        if($order){
+            $answers = UserAnswer::where('order_id', $order_id)->get();
+            foreach ($answers as $item) {
+                $item->answer = explode(',', $item->answer);
+            }
+            $order->is_payment = false;
+            $order->un_read = Message::where('order_id', $order_id)->where('is_read', 0)->count();
+            $order->answers = $answers;
+            return response()->json([
+                'status' => true,
+                'action' => "Order Detail",
+                'data' => $order
+            ]);
         }
-        $order->is_payment = false;
-        $order->un_read = Message::where('order_id', $order_id)->where('is_read', 0)->count();
-        $order->answers = $answers;
         return response()->json([
-            'status' => true,
-            'action' => "Order Detail",
-            'data' => $order
+            'status' => false,
+            'action' => "Order not found",
         ]);
+       
     }
     public function complete($order_id)
     {
