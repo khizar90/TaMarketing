@@ -112,6 +112,30 @@
             </a>
         </li>
 
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Payment Methods</span>
+        </li>
+
+        <li class="menu-item {{ Request::url() == route('dashboard-venmo-') ? 'active' : '' }}">
+            <a href="{{ route('dashboard-venmo-') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-circle"></i>
+                <div data-i18n="Questions">Venmo</div>
+
+            </a>
+            
+        </li>
+
+        <li class="menu-item {{ Request::url() == route('dashboard-zelle-') ? 'active' : '' }}">
+            <a href="{{ route('dashboard-zelle-') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-circle"></i>
+                <div data-i18n="Questions">Zelle</div>
+
+            </a>
+            
+        </li>
+
+
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Order Request Form</span>
         </li>

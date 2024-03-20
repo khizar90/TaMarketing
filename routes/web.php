@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\FormController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
@@ -64,8 +66,21 @@ Route::prefix('dashboard')->middleware(['auth'])->name('dashboard-')->group(func
         Route::get('delete-faq/{id}', [AdminController::class, 'deleteFaq'])->name('delete');
     });
 
-
+    Route::prefix('venmo')->name('venmo-')->group(function () {
+        Route::get('/', [AdminPaymentController::class, 'venmo']);
+        Route::post('add', [AdminPaymentController::class, 'addVenmo'])->name('add');
+        Route::post('edit/{id}', [AdminPaymentController::class, 'editVenmo'])->name('edit');
+        Route::get('delete-venmo/{id}', [AdminPaymentController::class, 'deleteVenmo'])->name('delete');     
+    });
    
+
+    Route::prefix('zelle')->name('zelle-')->group(function () {
+        Route::get('/', [AdminPaymentController::class, 'zelle']);
+        Route::post('add', [AdminPaymentController::class, 'addZelle'])->name('add');
+        Route::post('edit/{id}', [AdminPaymentController::class, 'editZelle'])->name('edit');
+        Route::get('delete-zelle/{id}', [AdminPaymentController::class, 'deleteZelle'])->name('delete'); 
+        
+    });
 
 
     // Route::prefix('ticket')->name('ticket-')->group(function () {

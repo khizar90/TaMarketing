@@ -24,7 +24,7 @@ class FormController extends Controller
         $single_video = Form::where('type', 'single_video')->first();
         $multiple_images = Form::where('type', 'multiple_images')->first();
         $document_type = Form::where('type', 'document_type')->first();
-        return view('form.index', compact('questions' ,'single_image','single_video','multiple_images','document_type','pending','accept','start','delivered','pending','accept','start','delivered','verify'));
+        return view('form.index', compact('questions', 'single_image', 'single_video', 'multiple_images', 'document_type', 'pending', 'accept', 'start', 'delivered', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }
     public function addQuestion(Request $request)
     {
@@ -69,4 +69,5 @@ class FormController extends Controller
         }
         return redirect()->back();
     }
+   
 }
