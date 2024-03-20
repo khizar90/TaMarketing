@@ -83,7 +83,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => true,
                 'action' => "Orders",
-                'data' => $item
+                'data' => $list
             ]);
         
     }
@@ -107,12 +107,14 @@ class OrderController extends Controller
 
     public function detail($order_id)
     {
+        
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
         $answers = UserAnswer::where('order_id', $order_id)->get();
         foreach ($answers as $item) {
             $item->answer = explode(',', $item->answer);
         }
         $order->is_payment = false;
+        $order->un_read = Message::where('order_id', $order_id)->where('is_read', 0)->count();
         $order->answers = $answers;
         return response()->json([
             'status' => true,

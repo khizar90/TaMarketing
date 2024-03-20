@@ -21,7 +21,7 @@ class AdminOrderController extends Controller
         $delivered = Order::where('status', 3)->count();
 
         $orders = Order::with(['user:uuid,name,image,email,verify'])->where('status', $status)->latest()->get();
-        return view('order.index', compact('orders','pending','accept','start','delivered','verify'));
+        return view('order.index', compact('orders', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }
     public function changeStatus(Request $request, $order_id, $status)
     {
@@ -70,7 +70,7 @@ class AdminOrderController extends Controller
         }
         $order->answers = $answers;
 
-        return view('order.detail', compact('order','pending','accept','start','delivered','verify'));
+        return view('order.detail', compact('order', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }
 
 
@@ -86,7 +86,7 @@ class AdminOrderController extends Controller
             ->get();
         $order = Order::find($order_id);
         $findUser = User::find($order->user_id)->first();
-        return  view('order.chat', compact('conversation', 'findUser', 'order','pending','accept','start','delivered','verify'));
+        return  view('order.chat', compact('conversation', 'findUser', 'order', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }
 
     public function sendMessage(Request $request)
@@ -96,7 +96,6 @@ class AdminOrderController extends Controller
         $message->user_id = $request->user_id;
         $message->send_by = 'admin';
         $message->message = $request->message ?: '';
-        $message->type = 'text';
         $message->time = strtotime(date('Y-m-d H:i:s'));
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
@@ -106,6 +105,9 @@ class AdminOrderController extends Controller
             if ($file->move('uploads/user/' . $request->order_id . '/messages/', $filename))
                 $path = '/uploads/user/' . $request->order_id . '/messages/' . $filename;
             $message->attachment = $path;
+            $message->type = 'image';
+        } else {
+            $message->type = 'text';
         }
         $message->save();
         return response()->json($message);
