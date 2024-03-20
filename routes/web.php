@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\FormController;
-use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
