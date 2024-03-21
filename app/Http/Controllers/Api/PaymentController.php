@@ -43,16 +43,4 @@ class PaymentController extends Controller
             'action' => "Payment Send"
         ]);
     }
-
-    public function method($type){
-        if($type == 'venmo'){
-        }
-        if($type == 'zelle'){
-        }
-        return response()->json([
-            'status' => true,
-            'action' => "Method",
-            'data' => $method
-        ]);
-    }
 }
