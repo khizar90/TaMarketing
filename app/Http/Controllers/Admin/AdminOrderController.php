@@ -50,20 +50,20 @@ class AdminOrderController extends Controller
 
                 NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been accepted by the admin. Please proceed with the next payment.', 'accepted');
                 $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
-                FirebaseNotification::handle($tokens, 'Your order ' . $order->id . ' has been accepted by the admin. Please proceed with the next payment', 'Order Accepted', ['data_id' => $order->id, 'type' => 'accepted']);
+                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been accepted by the admin. Please proceed with the next payment.', 'Order Accepted', ['data_id' => $order->id, 'type' => 'accepted']);
             } elseif ($status == 2) {
                 $order->started_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
 
-                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!', 'started');
+                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!.', 'started');
                 $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
-                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been started. Say tuned for updates!', 'Order Started', ['data_id' => $order->id, 'type' => 'started']);
+                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been started. Say tuned for updates!.', 'Order Started', ['data_id' => $order->id, 'type' => 'started']);
             } elseif ($status == 3) {
                 $order->delivered_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
                 NewNotification::handle($to, $order->id, 'You have a delivery request for the order #' . $order->id . '. Please accept it and complete the order.', 'delivered');
                 $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
-                FirebaseNotification::handle($tokens, 'You have a delivery request for the order #' . $order->id . '. Please accept it and complete the order', 'Order Delivered', ['data_id' => $order->id, 'type' => 'delivered']);
+                FirebaseNotification::handle($tokens, 'You have a delivery request for the order #' . $order->id . '. Please accept it and complete the order.', 'Order Delivered', ['data_id' => $order->id, 'type' => 'delivered']);
             } else {
                 $order->delivered_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
