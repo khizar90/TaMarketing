@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -48,9 +49,10 @@ Route::post('order/send/message', [OrderController::class, 'sendMessage']);
 
 Route::get('home/{user_id}', [UserController::class, 'home']);
 Route::get('counter/{user_id}', [UserController::class, 'counter']);
+Route::get('user/notification/{user_id}', [UserController::class, 'notification']);
 
 
-
+Route::post('create/payment', [PaymentController::class, 'create']);
 
 
 

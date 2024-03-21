@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignUuid('user_id')->references('uuid')->on('users')->onDelete('cascade');
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
-            $table->string('price');
             $table->string('method');
             $table->string('transcript')->default('');
             $table->boolean('status')->default(0);

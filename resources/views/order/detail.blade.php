@@ -175,9 +175,10 @@
                         </div>
                         <div class="d-flex align-content-center flex-wrap gap-2">
                             @if ($order->status == 0 || $order->status == 1 || $order->status == 2 || $order->status == 3)
-                            <a href="{{ route('dashboard-order-conversation', $order->id) }}" class="btn btn-primary">Chat</a>
-                        @endif
-                        
+                                <a href="{{ route('dashboard-order-conversation', $order->id) }}"
+                                    class="btn btn-primary">Chat</a>
+                            @endif
+
 
                             @if ($order->status == 0 || $order->status == 1)
                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancel">Cancel
@@ -248,33 +249,43 @@
                                     <div class="frame_text">
                                         <div class="mb-2">
                                             <h6 class="mb-1">{{ $item->question }}</h6>
-                                            @if ($item->type == 'multi_images' || $item->type == 'single_image')
+                                            @if ($item->type == 'multiple_images' || $item->type == 'single_image')
                                                 <div class="row">
                                                     @foreach ($item->answer as $answer)
                                                         <div class="col-3">
-                                                            <img src="{{ $answer }}" alt=""
-                                                                style="width: 100% ; height: 150px;">
+                                                            <a href="{{ $answer }}" target="_blank">
+                                                                <img src="{{ $answer }}" class="rounded"
+                                                                    alt="" style="width: 100% ; height: 150px;">
+                                                            </a>
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             @elseif ($item->type == 'single_video')
                                                 <div class="row">
-                                                    <div class="col-3">
-                                                        <video src="{{ $item->video }}"
-                                                            style="width: 100% ; height: 150px;"></video>
-                                                    </div>
+                                                    @foreach ($item->answer as $answer)
+                                                        <div class="col-3">
+                                                            <a href="{{ $answer }}" target="_blank">
+                                                                <video src="{{ $answer }}" style="width: 100% "
+                                                                    class="rounded"></video>
+                                                            </a>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                             @elseif ($item->type == 'document_type')
                                                 <div class="row">
-                                                    <div class="col-3">
-                                                        <a href="{{ $item->answer }}">
-                                                            <img src="https://media.istockphoto.com/id/1209500169/vector/document-papers-line-icon-pages-vector-illustration-isolated-on-white-office-notes-outline.jpg?s=612x612&w=0&k=20&c=Dt2k6dEbHlogHilWPTkQXAUxAL9sKZnoO2e055ihMO0="
-                                                                alt="" style="width: 100% ; height: 150px;">
-                                                        </a>
-                                                    </div>
+                                                    @foreach ($item->answer as $answer)
+                                                        <div class="col-3">
+                                                            <a href="{{ $answer }}" target="_blank">
+                                                                <img src="https://media.istockphoto.com/id/1209500169/vector/document-papers-line-icon-pages-vector-illustration-isolated-on-white-office-notes-outline.jpg?s=612x612&w=0&k=20&c=Dt2k6dEbHlogHilWPTkQXAUxAL9sKZnoO2e055ihMO0="
+                                                                    alt="" style="width: 100% ; height: 150px;">
+                                                            </a>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                             @else
-                                                <span class="">{{ $item->answer }}</span>
+                                                @foreach ($item->answer as $answer)
+                                                    <span class="">{{ $answer }}</span>
+                                                @endforeach
                                             @endif
                                         </div>
 
@@ -472,9 +483,28 @@
                             <p class=" mb-1">Email: {{ $order->user->email }}</p>
                         </div>
                     </div>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="card-title m-0">Payment details</h6>
+                        </div>
+                        <div class="card-body">
+                            @if ($order->payment)
+                                <p class=" mb-1">Method: {{ $order->payment->method }}</p>
+                                <p class=" mb-1">Transcript: </p>
 
+                                <a href="{{ $order->payment->transcript }}" target="_blank">
+                                    <img src="{{ $order->payment->transcript }}" width="100" height="100"
+                                        alt="">
 
+                                </a>
+                            @else
+                                <p class=" mb-1 text-center text-danger">Payment is pending</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
 
         </div>

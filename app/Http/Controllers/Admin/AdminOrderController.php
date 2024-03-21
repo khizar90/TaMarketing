@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\FirebaseNotification;
+use App\Actions\NewNotification;
 use App\Http\Controllers\Controller;
 use App\Models\CancelOrder;
 use App\Models\Message;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\UserAnswer;
+use App\Models\UserDevice;
 use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
@@ -27,6 +31,8 @@ class AdminOrderController extends Controller
     {
         $order = Order::find($order_id);
         if ($order) {
+            $to = User::find($order->user_id);
+
             if ($status == 5) {
                 $cancel = new CancelOrder();
                 $cancel->order_id = $order_id;
@@ -39,9 +45,25 @@ class AdminOrderController extends Controller
                 $order->status = $status;
                 $order->price = $request->price;
                 $order->accept_timestamp = strtotime(date('Y-m-d H:i:s'));
+
+                $to = User::find($order->user_id);
+
+                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been accepted by the admin. Please proceed with the next payment.', 'accepted');
+                $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
+                FirebaseNotification::handle($tokens, 'Your order ' . $order->id . ' has been accepted by the admin. Please proceed with the next payment', 'Order Accepted', ['data_id' => $order->id, 'type' => 'accepted']);
             } elseif ($status == 2) {
                 $order->started_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
+
+                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!', 'started');
+                $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
+                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been started. Say tuned for updates!', 'Order Started', ['data_id' => $order->id, 'type' => 'started']);
+            } elseif ($status == 3) {
+                $order->delivered_timestamp = strtotime(date('Y-m-d H:i:s'));
+                $order->status = $status;
+                NewNotification::handle($to, $order->id, 'You have a delivery request for the order #' . $order->id . '. Please accept it and complete the order.', 'delivered');
+                $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
+                FirebaseNotification::handle($tokens, 'You have a delivery request for the order #' . $order->id . '. Please accept it and complete the order', 'Order Delivered', ['data_id' => $order->id, 'type' => 'delivered']);
             } else {
                 $order->delivered_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
@@ -64,11 +86,12 @@ class AdminOrderController extends Controller
         $order->user->order_count = $order_count;
         $answers = UserAnswer::where('order_id', $order->id)->get();
         foreach ($answers as $item) {
-            if ($item->type == 'single_image' || $item->type == 'multi_images') {
-                $item->answer = explode(',', $item->answer);
-            }
+            $item->answer = explode(',', $item->answer);
         }
         $order->answers = $answers;
+
+        $payment = Payment::where('order_id', $order_id)->latest()->first();
+        $order->payment = $payment;
 
         return view('order.detail', compact('order', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }

@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Venmo extends Model
 {
     use HasFactory;
+    protected $hidden = [
+        'updated_at',
+        'created_at'
+    ];
 }

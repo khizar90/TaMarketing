@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\FirebaseNotification;
+use App\Actions\NewNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CancelOrderRequest;
 use App\Http\Requests\Api\CreateOrderRequest;
@@ -10,7 +12,10 @@ use App\Models\CancelOrder;
 use App\Models\Form;
 use App\Models\Message;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\User;
 use App\Models\UserAnswer;
+use App\Models\UserDevice;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -100,7 +105,12 @@ class OrderController extends Controller
     {
         $list = Order::where('user_id', $user_id)->where('status', $status)->get();
         foreach ($list as $item) {
-            $item->is_payment = false;
+            $paymnet  = Payment::where('order_id', $item->id)->first();
+            if ($paymnet) {
+                $item->is_payment = true;
+            } else {
+                $item->is_payment = false;
+            }
         }
         return response()->json([
             'status' => true,
@@ -130,13 +140,18 @@ class OrderController extends Controller
     {
 
         $order = Order::with(['user:uuid,name,image,email,verify'])->find($order_id);
-        if($order){
+        if ($order) {
             $answers = UserAnswer::where('order_id', $order_id)->get();
             foreach ($answers as $item) {
                 $item->answer = explode(',', $item->answer);
             }
-            $order->is_payment = false;
-            $order->un_read = Message::where('order_id', $order_id)->where('is_read', 0)->count();
+            $paymnet  = Payment::where('order_id', $order_id)->first();
+            if ($paymnet) {
+                $order->is_payment = true;
+            } else {
+                $order->is_payment = false;
+            }
+            $order->un_read = Message::where('order_id', $order_id)->where('send_by','admin')->where('is_read', 0)->count();
             $order->answers = $answers;
             return response()->json([
                 'status' => true,
@@ -148,7 +163,6 @@ class OrderController extends Controller
             'status' => false,
             'action' => "Order not found",
         ]);
-       
     }
     public function complete($order_id)
     {
@@ -157,6 +171,13 @@ class OrderController extends Controller
             $order->status = 4;
             $order->complete_timestamp = strtotime(date('Y-m-d H:i:s'));
             $order->save();
+
+            $to = User::find($order->user_id);
+            NewNotification::handle($to, $order->id, 'Your order #' . $order->id . 'hase been completed successfully.', 'completed');
+            $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
+            FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' hase been completed successfully.', 'Order Completed', ['data_id' => $order->id, 'type' => 'completed']);
+
+
             return response()->json([
                 'status' => true,
                 'action' => "Order Complete",
@@ -179,9 +200,14 @@ class OrderController extends Controller
         $orders = [];
         foreach ($ordersIds as $item) {
             $order = Order::find($item);
-            $count = Message::where('order_id', $order->id)->where('is_read', 0)->count();
+            $count = Message::where('order_id', $order->id)->where('send_by','admin')->where('is_read', 0)->count();
             $order->un_read  = $count;
-            $order->is_payment  = false;
+            $paymnet  = Payment::where('order_id', $order->id)->first();
+            if ($paymnet) {
+                $order->is_payment = true;
+            } else {
+                $order->is_payment = false;
+            }
             $orders[] = $order;
         }
 
@@ -194,7 +220,7 @@ class OrderController extends Controller
     }
     public function conversation($order_id)
     {
-        Message::where('order_id', $order_id)->where('is_read', 0)->update(['is_read' => 1]);
+        Message::where('order_id', $order_id)->where('send_by','admin')->where('is_read', 0)->update(['is_read' => 1]);
         $messages = Message::where('order_id', $order_id)->latest()->get();
         return response()->json([
             'status' => true,
