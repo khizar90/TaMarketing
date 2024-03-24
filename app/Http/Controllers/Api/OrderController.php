@@ -111,6 +111,7 @@ class OrderController extends Controller
             } else {
                 $item->is_payment = false;
             }
+            $item->un_read = Message::where('order_id', $item->id)->where('send_by','admin')->where('is_read', 0)->count();
         }
         return response()->json([
             'status' => true,
@@ -173,9 +174,9 @@ class OrderController extends Controller
             $order->save();
 
             $to = User::find($order->user_id);
-            NewNotification::handle($to, $order->id, 'Your order #' . $order->id . 'hase been completed successfully.', 'completed');
+            NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been completed successfully.', 'completed');
             $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
-            FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' hase been completed successfully.', 'Order Completed', ['data_id' => $order->id, 'type' => 'completed']);
+            FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been completed successfully.', 'Order Completed', ['data_id' => $order->id, 'type' => 'completed']);
 
 
             return response()->json([

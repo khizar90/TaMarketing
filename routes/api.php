@@ -53,6 +53,7 @@ Route::get('user/notification/{user_id}', [UserController::class, 'notification'
 
 
 Route::post('create/payment', [PaymentController::class, 'create']);
+Route::post('payment/intent' , [PaymentController::class , 'createIntent']);
 
 
 

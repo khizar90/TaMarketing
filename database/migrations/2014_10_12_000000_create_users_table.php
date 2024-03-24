@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('image')->default('');
             $table->string('password');
             $table->boolean('verify')->default(0);
+            $table->string('stripe_customer_id')->default('');
             $table->timestamps();
         });
     }

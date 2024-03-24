@@ -55,9 +55,9 @@ class AdminOrderController extends Controller
                 $order->started_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
 
-                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!.', 'started');
+                NewNotification::handle($to, $order->id, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!', 'started');
                 $tokens = UserDevice::where('user_id', $order->user_id)->where('token', '!=', '')->groupBy('token')->pluck('token')->toArray();
-                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been started. Say tuned for updates!.', 'Order Started', ['data_id' => $order->id, 'type' => 'started']);
+                FirebaseNotification::handle($tokens, 'Your order #' . $order->id . ' has been started. Stay tuned for updates!', 'Order Started', ['data_id' => $order->id, 'type' => 'started']);
             } elseif ($status == 3) {
                 $order->delivered_timestamp = strtotime(date('Y-m-d H:i:s'));
                 $order->status = $status;
@@ -108,7 +108,7 @@ class AdminOrderController extends Controller
         $conversation = Message::where('order_id', $order_id)->orderBy('created_at', 'asc')
             ->get();
         $order = Order::find($order_id);
-        $findUser = User::find($order->user_id)->first();
+        $findUser = User::find($order->user_id);
         return  view('order.chat', compact('conversation', 'findUser', 'order', 'pending', 'accept', 'start', 'delivered', 'verify'));
     }
 

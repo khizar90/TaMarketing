@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserAnswer;
 use App\Models\Venmo;
 use App\Models\Zelle;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -26,6 +27,17 @@ class UserController extends Controller
         $delivered = Order::where('user_id', $user_id)->where('status', 3)->count();
         $complete = Order::where('user_id', $user_id)->where('status', 4)->count();
         $canceled = Order::where('user_id', $user_id)->where('status', 5)->count();
+
+        foreach ($pending_order as $item) {
+            $paymnet  = Payment::where('order_id', $item->id)->first();
+            if ($paymnet) {
+                $item->is_payment = true;
+            } else {
+                $item->is_payment = false;
+            }
+            $item->un_read = Message::where('order_id', $item->id)->where('send_by','admin')->where('is_read', 0)->count();
+
+        }
 
         $zelle = Zelle::latest()->first();
         $venmo = Venmo::latest()->first();
@@ -54,7 +66,7 @@ class UserController extends Controller
 
         if ($counter) {
             $message = Message::where('user_id', $counter->uuid)->where('send_by', 'admin')->where('is_read', 0)->count();
-            $notify = Notification::where('user_id', $uuid)->wehre('is_read', 0)->count();
+            $notify = Notification::where('user_id', $uuid)->where('is_read', 0)->count();
             return response()->json([
                 'status' => true,
                 'action' => "Counter",
@@ -75,11 +87,13 @@ class UserController extends Controller
         $user = User::where('uuid', $user_id)->first();
         if ($user) {
             $notifications = Notification::with('user')->where('user_id', $user_id)->latest()->paginate(12);
+            Notification::where('user_id',$user_id)->where('is_read',0)->update(['is_read' =>  1]);
             return response()->json([
                 'status' => true,
                 'action' => "Notification",
                 'data' => $notifications
             ]);
+
         }
         return response()->json([
             'status' => false,
